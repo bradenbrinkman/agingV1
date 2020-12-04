@@ -24,7 +24,7 @@ mainAnalyzer.m script). Each of the cm folders contains the results for
 4.  All weights frozen after youth
 
 5.  Critical learning (after youth, rate reduced by 10 and stimulus
-    > presentation time extended by 10)
+     presentation time extended by 10)
 
 **mainAnalyzer.m**
 
@@ -60,7 +60,7 @@ mainAnalyzer.m script). Each of the cm folders contains the results for
     remapWeightsSmooth.m and Optimization Toolbox for Gabor-ness
     analysis
 
-**networkAger.m **
+**networkAger.m**
 
 -   function for training E-I Net
 
@@ -143,7 +143,7 @@ files from these packages.
         package distributionPlot is included only for the convenience
         of generating similar plots directly in MATLAB.
 
--   export\_fig: https://www.github.com/altmany/export\_fig
+-   export\_fig: [*https://www.github.com/altmany/export_fig*](https://www.github.com/altmany/export_fig)
 
 -   VisualStimulusToolbox: [*https://zenodo.org/record/154061\#.X8FP0hNKh0s*](https://zenodo.org/record/154061#.X8FP0hNKh0s)
 
