@@ -9,11 +9,11 @@ The MATLAB scripts in this package were written for MATLAB version
 2018b. For full use the Curve Fitting and Optimization Toolboxes must be
 installed. The folders “cm1,” “cm7,” and “cm16” in this package contain
 the results for movies 01, 07, and 16 from the [*CatCam
-database*](https://zenodo.org/record/46481#.X8pfbKpKiu4). (The processed
-CatCam movies are included in the main directory as cat\_movie\_1.mat,
-etc. The processing can be done on the original movies with the provided
-mainAnalyzer.m script). Each of the cm folders contains the results for
-5 variations of the model (model1, model2, etc.), indexed as follows:
+database*](https://zenodo.org/record/46481#.X8pfbKpKiu4). 
+Download the corresponding movie from this database. (The processing 
+of these movies is done by the provided mainAnalyzer.m script). 
+Each of the cm folders contains the results for 5 variations of the model 
+(model1, model2, etc.), indexed as follows:
 
 1.  Normal aging
 
