@@ -1,0 +1,4 @@
+0.00% of neurons, in either youth or age, did not have Gabor fits and are excluded from the following statistics
+30.75% of young neurons had good Gabor-like fits, while only 5.75% of aged neurons did
+2.25% of Gabor-like young neurons remained gabor-like in old age, while 97.75% of neurons that were Gabor-like in youth were rejected as being Gabor-like in old age
+3.50% of neurons were not Gabor-like in youth but became Gabor-like in old age
