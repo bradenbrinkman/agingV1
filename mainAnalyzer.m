@@ -110,7 +110,7 @@ end
 
 %STEP 2: create and age model
 
-networkAger(IMAGES, gratings, resultsdir);
+%networkAger(IMAGES, gratings, resultsdir);
 
 
 %STEP 3: examine model
@@ -412,169 +412,169 @@ for ag = 1:numel(ages1)
     spikeCountsExc(:, ag) = spikeCountsE;
     spikeCountsInh(:, ag) = spikeCountsI;
 end
-%%
-%average spike counts
-close gcf;
-save('countSpikesExc.txt','spikeCountsExc')
-xticks = '30 35 40 45 50 55 60 65 70 75 80';
-xticks = split(xticks, ' ');
-figure;
-distributionPlot(spikeCountsExc, 'xNames', xticks);
-xlabel('Age (\# training loops)','FontSize',30,'Interpreter','LaTeX')
-ylabel('Relative spike counts','FontSize',30,'Interpreter','LaTeX')
-saveas(gcf, strcat(resultsdir, 'excitatory_spike_counts.fig'))
-export_fig(strcat(resultsdir, 'excitatory_spike_counts.pdf'), '-painters', '-transparent')
-
-save('countSpikesInh.txt','spikeCountsInh')
-figure;
-distributionPlot(spikeCountsInh, 'xNames', xticks);
-xlabel('Age (\# training loops)','FontSize',30,'Interpreter','LaTeX')
-ylabel('Relative spike counts','FontSize',30,'Interpreter','LaTeX')
-saveas(gcf, strcat(resultsdir, 'inhibitory_spike_counts.fig'))
-export_fig(strcat(resultsdir, 'inhibitory_spike_counts.pdf'), '-painters', '-transparent')
-
-
-%angles between vectorized input weights
-figure;
-young = a30;
-young_aged_angles = zeros(numel(ages1), young.cg_V1e.numCells);
-for i = 1:numel(ages1)
-    aged = ages1(i);
-    for j = 1:young.cg_V1e.numCells
-        young_aged_angles(i, j) = real(acos(dot(young.cellGroup{2}.inputBlock(1).weight(j, :), aged.cellGroup{2}.inputBlock(1).weight(j, :))/(norm(young.cellGroup{2}.inputBlock(1).weight(j, :))*norm(aged.cellGroup{2}.inputBlock(1).weight(j, :)))));
-    end
-end
-young_aged_angles = young_aged_angles';
-save('RFangles.txt','young_aged_angles')
-distributionPlot(young_aged_angles, 'xNames', xticks);
-xlabel('Age (\# training loops)','FontSize',13,'Interpreter','LaTeX')
-ylabel('Angle between vectorized young (age 30) and aged input weights','FontSize',13,'Interpreter','LaTeX')
-saveas(gcf, strcat(resultsdir, 'angle_btw_vectors.fig'))
-export_fig(strcat(resultsdir, 'angle_btw_vectors.pdf'), '-painters', '-transparent')
-
-
-%lateral and input weight distribution comparisons
-
-% i -> e weights
-wei30 = -a30.cellGroup{2}.inputBlock(3).weight;
-wei80 = -a80.cellGroup{2}.inputBlock(3).weight;
-
-% i -> i weights
-wii30 = -a30.cellGroup{3}.inputBlock(3).weight;
-wii80 = -a80.cellGroup{3}.inputBlock(3).weight;
-
-% e -> i weights
-wie30 = a30.cellGroup{3}.inputBlock(2).weight;
-wie80 = a80.cellGroup{3}.inputBlock(2).weight;
-
-% i -> e weights
-
-figure; histogram(wei30,30,'Normalization','pdf','FaceColor',colors(1,:))
-hold on;
-histogram(wei80,20,'Normalization','pdf','FaceAlpha',0.5,'FaceColor','b')
-xlim([-5 0])
-set(gca, 'YScale', 'log','FontSize',25)
-xlabel('I$\rightarrow$E weight $W_{EI}$','FontSize',25,'Interpreter','LaTeX')
-ylabel('frequency (norm.)','FontSize',25,'Interpreter','LaTeX')
-legend('young network', 'old network','Location','Northeast')
-legend('boxoff')
-ylim([1e-4 10.5])
-axis square
-saveas(gcf, strcat(resultsdir, 'i_to_e.fig'))
-export_fig(strcat(resultsdir, 'i_to_e.pdf'), '-painters', '-transparent')
-
-
-% i -> i weights
-
-figure; histogram(wii30,20,'Normalization','pdf','FaceColor',colors(1,:))
-hold on;
-histogram(wii80,20,'Normalization','pdf','FaceAlpha',0.5,'FaceColor','b')
-xlim([-3 0])
-set(gca, 'YScale', 'log','FontSize',25)
-xlabel('I$\rightarrow$I weight $W_{II}$','FontSize',25,'Interpreter','LaTeX')
-ylabel('frequency (norm.)','FontSize',25,'Interpreter','LaTeX')
-legend('young network', 'old network','Location','Northeast')
-legend('boxoff')
-ylim([1e-4 10.5])
-axis square
-saveas(gcf, strcat(resultsdir, 'i_to_i.fig'))
-export_fig(strcat(resultsdir, 'i_to_i.pdf'), '-painters', '-transparent')
-
-
-% e -> i weights
-figure; histogram(wie30,32,'Normalization','pdf','FaceColor',colors(1,:))
-hold on;
-histogram(wie80,20,'Normalization','pdf','FaceAlpha',0.5,'FaceColor','b')
-xlim([0 5])
-set(gca, 'YScale', 'log','FontSize',25)
-xlabel('E$\rightarrow$I weight $W_{IE}$','FontSize',25,'Interpreter','LaTeX')
-ylabel('frequency (norm.)','FontSize',25,'Interpreter','LaTeX')
-legend('young network', 'old network','Location','Northeast')
-legend('boxoff')
-ylim([1e-4 10.5])
-axis square
-saveas(gcf, strcat(resultsdir, 'e_to_i.fig'))
-export_fig(strcat(resultsdir, 'e_to_i.pdf'), '-painters', '-transparent')
-
-
-%threshold distribution comparison
-thresh30 = a30.cellGroup{2}.spikeThresh;
-thresh80 = a80.cellGroup{2}.spikeThresh;
-figure; histogram(thresh80,20,'Normalization','pdf','FaceColor','b','FaceAlpha',0.5)
-hold on;
-histogram(thresh30,32,'Normalization','pdf','FaceColor',colors(1,:),'EdgeColor','none')
-xlim([-0.5 9.5]);
-set(gca,'YScale','log','FontSize',25);
-xlabel('firing thresholds $\theta$','FontSize',25,'Interpreter','LaTeX')
-ylabel('frequency (norm.)','FontSize',25,'Interpreter','LaTeX')
-lgt = legend('old network', 'young network','Location','Northeast');
-legend('boxoff');
-lgt.FontSize = 20;
-ylim([1e-4 5.5]);
-axis square;
-saveas(gcf, strcat(resultsdir, 'thresh.fig'))
-export_fig(strcat(resultsdir, 'thresh.pdf'), '-painters', '-transparent')
-
-%input weight distribution comparison and receptive field comparison
-
-Q30 = a30.cellGroup{2}.inputBlock(1).weight;
-Q80 = a80.cellGroup{2}.inputBlock(1).weight;
-
-colors = parula(12);
-colors(1:12,1:3) = colors([11:-1:1, 12],1:3);
-
-figure;
-histogram(Q30(:),32,'Normalization','pdf','FaceColor',colors(1,:))
-hold on;
-histogram(Q80(:),28,'Normalization','pdf','FaceAlpha',0.5,'FaceColor','b')
-set(gca,'YScale','log','FontSize',25)
-xlim([-1.1 1.1])
-xlabel('input weights $Q$','FontSize',25,'Interpreter','LaTeX')
-ylabel('frequency (norm.)','FontSize',25)
-legend('young', 'old','Location','Northeast')
-legend('boxoff')
-ylim([1e-4 10.5])
-axis square
-saveas(gcf, strcat(resultsdir, 'input_weight.fig'))
-export_fig(strcat(resultsdir, 'input_weight.pdf'), '-painters', '-transparent')
-
-figure;
-for i=1:4 %picking first four (arbitrary) neurons
-    subplot(2,4,i)
-    imagesc(reshape(Q30(i,:),8,8)/sqrt(var(Q30(i,:))));
-    axis square
-    axis off
-    colormap('gray')
-    
-    subplot(2,4,i+4)
-    imagesc(reshape(Q80(i,:),8,8)/sqrt(var(Q80(i,:))));
-    axis square
-    axis off
-    colormap('gray')
-end
-
-saveas(gcf, strcat(resultsdir, 'young_rfs_top_old_rfs_bottom.fig'))
-export_fig(strcat(resultsdir, 'young_rfs_top_old_rfs_bottom.pdf'), '-painters', '-transparent')
+% %%
+% %average spike counts
+% close gcf;
+% save('countSpikesExc.txt','spikeCountsExc')
+% xticks = '30 35 40 45 50 55 60 65 70 75 80';
+% xticks = split(xticks, ' ');
+% figure;
+% distributionPlot(spikeCountsExc, 'xNames', xticks);
+% xlabel('Age (\# training loops)','FontSize',30,'Interpreter','LaTeX')
+% ylabel('Relative spike counts','FontSize',30,'Interpreter','LaTeX')
+% saveas(gcf, strcat(resultsdir, 'excitatory_spike_counts.fig'))
+% export_fig(strcat(resultsdir, 'excitatory_spike_counts.pdf'), '-painters', '-transparent')
+% 
+% save('countSpikesInh.txt','spikeCountsInh')
+% figure;
+% distributionPlot(spikeCountsInh, 'xNames', xticks);
+% xlabel('Age (\# training loops)','FontSize',30,'Interpreter','LaTeX')
+% ylabel('Relative spike counts','FontSize',30,'Interpreter','LaTeX')
+% saveas(gcf, strcat(resultsdir, 'inhibitory_spike_counts.fig'))
+% export_fig(strcat(resultsdir, 'inhibitory_spike_counts.pdf'), '-painters', '-transparent')
+% 
+% 
+% %angles between vectorized input weights
+% figure;
+% young = a30;
+% young_aged_angles = zeros(numel(ages1), young.cg_V1e.numCells);
+% for i = 1:numel(ages1)
+%     aged = ages1(i);
+%     for j = 1:young.cg_V1e.numCells
+%         young_aged_angles(i, j) = real(acos(dot(young.cellGroup{2}.inputBlock(1).weight(j, :), aged.cellGroup{2}.inputBlock(1).weight(j, :))/(norm(young.cellGroup{2}.inputBlock(1).weight(j, :))*norm(aged.cellGroup{2}.inputBlock(1).weight(j, :)))));
+%     end
+% end
+% young_aged_angles = young_aged_angles';
+% save('RFangles.txt','young_aged_angles')
+% distributionPlot(young_aged_angles, 'xNames', xticks);
+% xlabel('Age (\# training loops)','FontSize',13,'Interpreter','LaTeX')
+% ylabel('Angle between vectorized young (age 30) and aged input weights','FontSize',13,'Interpreter','LaTeX')
+% saveas(gcf, strcat(resultsdir, 'angle_btw_vectors.fig'))
+% export_fig(strcat(resultsdir, 'angle_btw_vectors.pdf'), '-painters', '-transparent')
+% 
+% 
+% %lateral and input weight distribution comparisons
+% 
+% % i -> e weights
+% wei30 = -a30.cellGroup{2}.inputBlock(3).weight;
+% wei80 = -a80.cellGroup{2}.inputBlock(3).weight;
+% 
+% % i -> i weights
+% wii30 = -a30.cellGroup{3}.inputBlock(3).weight;
+% wii80 = -a80.cellGroup{3}.inputBlock(3).weight;
+% 
+% % e -> i weights
+% wie30 = a30.cellGroup{3}.inputBlock(2).weight;
+% wie80 = a80.cellGroup{3}.inputBlock(2).weight;
+% 
+% % i -> e weights
+% 
+% figure; histogram(wei30,30,'Normalization','pdf','FaceColor',colors(1,:))
+% hold on;
+% histogram(wei80,20,'Normalization','pdf','FaceAlpha',0.5,'FaceColor','b')
+% xlim([-5 0])
+% set(gca, 'YScale', 'log','FontSize',25)
+% xlabel('I$\rightarrow$E weight $W_{EI}$','FontSize',25,'Interpreter','LaTeX')
+% ylabel('frequency (norm.)','FontSize',25,'Interpreter','LaTeX')
+% legend('young network', 'old network','Location','Northeast')
+% legend('boxoff')
+% ylim([1e-4 10.5])
+% axis square
+% saveas(gcf, strcat(resultsdir, 'i_to_e.fig'))
+% export_fig(strcat(resultsdir, 'i_to_e.pdf'), '-painters', '-transparent')
+% 
+% 
+% % i -> i weights
+% 
+% figure; histogram(wii30,20,'Normalization','pdf','FaceColor',colors(1,:))
+% hold on;
+% histogram(wii80,20,'Normalization','pdf','FaceAlpha',0.5,'FaceColor','b')
+% xlim([-3 0])
+% set(gca, 'YScale', 'log','FontSize',25)
+% xlabel('I$\rightarrow$I weight $W_{II}$','FontSize',25,'Interpreter','LaTeX')
+% ylabel('frequency (norm.)','FontSize',25,'Interpreter','LaTeX')
+% legend('young network', 'old network','Location','Northeast')
+% legend('boxoff')
+% ylim([1e-4 10.5])
+% axis square
+% saveas(gcf, strcat(resultsdir, 'i_to_i.fig'))
+% export_fig(strcat(resultsdir, 'i_to_i.pdf'), '-painters', '-transparent')
+% 
+% 
+% % e -> i weights
+% figure; histogram(wie30,32,'Normalization','pdf','FaceColor',colors(1,:))
+% hold on;
+% histogram(wie80,20,'Normalization','pdf','FaceAlpha',0.5,'FaceColor','b')
+% xlim([0 5])
+% set(gca, 'YScale', 'log','FontSize',25)
+% xlabel('E$\rightarrow$I weight $W_{IE}$','FontSize',25,'Interpreter','LaTeX')
+% ylabel('frequency (norm.)','FontSize',25,'Interpreter','LaTeX')
+% legend('young network', 'old network','Location','Northeast')
+% legend('boxoff')
+% ylim([1e-4 10.5])
+% axis square
+% saveas(gcf, strcat(resultsdir, 'e_to_i.fig'))
+% export_fig(strcat(resultsdir, 'e_to_i.pdf'), '-painters', '-transparent')
+% 
+% 
+% %threshold distribution comparison
+% thresh30 = a30.cellGroup{2}.spikeThresh;
+% thresh80 = a80.cellGroup{2}.spikeThresh;
+% figure; histogram(thresh80,20,'Normalization','pdf','FaceColor','b','FaceAlpha',0.5)
+% hold on;
+% histogram(thresh30,32,'Normalization','pdf','FaceColor',colors(1,:),'EdgeColor','none')
+% xlim([-0.5 9.5]);
+% set(gca,'YScale','log','FontSize',25);
+% xlabel('firing thresholds $\theta$','FontSize',25,'Interpreter','LaTeX')
+% ylabel('frequency (norm.)','FontSize',25,'Interpreter','LaTeX')
+% lgt = legend('old network', 'young network','Location','Northeast');
+% legend('boxoff');
+% lgt.FontSize = 20;
+% ylim([1e-4 5.5]);
+% axis square;
+% saveas(gcf, strcat(resultsdir, 'thresh.fig'))
+% export_fig(strcat(resultsdir, 'thresh.pdf'), '-painters', '-transparent')
+% 
+% %input weight distribution comparison and receptive field comparison
+% 
+% Q30 = a30.cellGroup{2}.inputBlock(1).weight;
+% Q80 = a80.cellGroup{2}.inputBlock(1).weight;
+% 
+% colors = parula(12);
+% colors(1:12,1:3) = colors([11:-1:1, 12],1:3);
+% 
+% figure;
+% histogram(Q30(:),32,'Normalization','pdf','FaceColor',colors(1,:))
+% hold on;
+% histogram(Q80(:),28,'Normalization','pdf','FaceAlpha',0.5,'FaceColor','b')
+% set(gca,'YScale','log','FontSize',25)
+% xlim([-1.1 1.1])
+% xlabel('input weights $Q$','FontSize',25,'Interpreter','LaTeX')
+% ylabel('frequency (norm.)','FontSize',25)
+% legend('young', 'old','Location','Northeast')
+% legend('boxoff')
+% ylim([1e-4 10.5])
+% axis square
+% saveas(gcf, strcat(resultsdir, 'input_weight.fig'))
+% export_fig(strcat(resultsdir, 'input_weight.pdf'), '-painters', '-transparent')
+% 
+% figure;
+% for i=1:4 %picking first four (arbitrary) neurons
+%     subplot(2,4,i)
+%     imagesc(reshape(Q30(i,:),8,8)/sqrt(var(Q30(i,:))));
+%     axis square
+%     axis off
+%     colormap('gray')
+%     
+%     subplot(2,4,i+4)
+%     imagesc(reshape(Q80(i,:),8,8)/sqrt(var(Q80(i,:))));
+%     axis square
+%     axis off
+%     colormap('gray')
+% end
+% 
+% saveas(gcf, strcat(resultsdir, 'young_rfs_top_old_rfs_bottom.fig'))
+% export_fig(strcat(resultsdir, 'young_rfs_top_old_rfs_bottom.pdf'), '-painters', '-transparent')
 
 
 %input weight remapping comparison
@@ -622,90 +622,6 @@ saveas(gcf, strcat(resultsdir, 'input_weight_remap.fig'))
 export_fig(strcat(resultsdir, 'input_weight_remap.pdf'), '-painters', '-transparent')
 
 
-
-
-
-%young-old parameter swapping
-
-figure;
-yng = rmfield(a30, 'response'); %creating a generic copy with response and selectivity fields deleted
-yng = rmfield(yng, 'selectivity');
-ole = rmfield(a80, 'response');
-ole = rmfield(ole, 'selectivity');
-
-oyy = yng;
-oyy.cellGroup{2}.inputBlock(1) = a80.cellGroup{2}.inputBlock(1);
-oyy.cellGroup{3}.inputBlock(1) = a80.cellGroup{3}.inputBlock(1);
-oyy = testSelectivity(oyy, ginputDataMaster, numOrientations, numfpa);
-oyy_sel = mean(oyy.selectivity.exc);
-
-yoy = yng;
-yoy.cellGroup{2}.inputBlock(3) = a80.cellGroup{2}.inputBlock(3);
-yoy.cellGroup{3}.inputBlock(3) = a80.cellGroup{3}.inputBlock(3);
-yoy.cellGroup{3}.inputBlock(2) = a80.cellGroup{3}.inputBlock(2);
-yoy = testSelectivity(yoy, ginputDataMaster, numOrientations, numfpa);
-yoy_sel = mean(yoy.selectivity.exc);
-
-yyo = yng;
-yyo.cellGroup{2}.spikeThresh = a80.cellGroup{2}.spikeThresh;
-yyo.cellGroup{3}.spikeThresh = a80.cellGroup{3}.spikeThresh;
-yyo = testSelectivity(yyo, ginputDataMaster, numOrientations, numfpa);
-yyo_sel = mean(yyo.selectivity.exc);
-
-ooy = ole;
-ooy.cellGroup{2}.spikeThresh = a30.cellGroup{2}.spikeThresh;
-ooy.cellGroup{3}.spikeThresh = a30.cellGroup{3}.spikeThresh;
-ooy = testSelectivity(ooy, ginputDataMaster, numOrientations, numfpa);
-ooy_sel = mean(ooy.selectivity.exc);
-
-oyo = ole;
-oyo.cellGroup{2}.inputBlock(3) = a30.cellGroup{2}.inputBlock(3);
-oyo.cellGroup{3}.inputBlock(3) = a30.cellGroup{3}.inputBlock(3);
-oyo.cellGroup{3}.inputBlock(2) = a30.cellGroup{3}.inputBlock(2);
-oyo = testSelectivity(oyo, ginputDataMaster, numOrientations, numfpa);
-oyo_sel = mean(oyo.selectivity.exc);
-
-yoo = ole;
-yoo.cellGroup{2}.inputBlock(1) = a30.cellGroup{2}.inputBlock(1);
-yoo.cellGroup{3}.inputBlock(1) = a30.cellGroup{3}.inputBlock(1);
-yoo = testSelectivity(yoo, ginputDataMaster, numOrientations, numfpa);
-yoo_sel = mean(yoo.selectivity.exc);
-close gcf;
-
-%bar chart
-xlabels = ['YYY'
-    'OYY'
-    'YOY'
-    'YYO'
-    'OOY'
-    'OYO'
-    'YOO'
-    'OOO'];
-
-C = [mean(a30.selectivity.exc)
-    oyy_sel
-    yoy_sel
-    yyo_sel
-    ooy_sel
-    oyo_sel
-    yoo_sel
-    mean(a80.selectivity.exc)];
-
-figure;
-axb = axes;
-bp = bar(axb,C,0.5,'FaceColor','flat','LineWidth',5);
-ylabel('Mean selectivity','Interpreter','latex','FontSize',20)
-ylim([0 1]);
-axb.XTickLabel= xlabels;
-xtickangle(30);
-text(4,0.9,'$Q W \theta =(Y/O,Y/O,Y/O)$','Interpreter','latex','FontSize',20);
-axb.FontSize = 20;
-set(axb.Legend,'Interpreter','latex','FontSize',20);
-bp(1).CData = [1 1 1];
-saveas(gcf, strcat(resultsdir, 'young_old_parameter_swaps.fig'))
-export_fig(strcat(resultsdir, 'young_old_parameter_swaps.pdf'), '-painters', '-transparent')
-
-
 %Selectivity when freezing parameter learning rates
 
 input_weight_off = [mean(i30.selectivity.exc), mean(i35.selectivity.exc), mean(i40.selectivity.exc), mean(i45.selectivity.exc), mean(i50.selectivity.exc), mean(i55.selectivity.exc), mean(i60.selectivity.exc), mean(i65.selectivity.exc), mean(i70.selectivity.exc), mean(i75.selectivity.exc), mean(i80.selectivity.exc)];
@@ -751,116 +667,185 @@ set(lgf,'FontSize',18,'Interpreter','LaTeX');
 saveas(gcf, strcat(resultsdir, 'critical_learning_period_test.fig'))
 export_fig(strcat(resultsdir, 'critical_learning_period_test.pdf'), '-painters', '-transparent')
 
-%Gabor character of young vs. old receptive fields as determined by fitting Gabor
-%wavelets
+% %Gabor character of young vs. old receptive fields as determined by fitting Gabor
+% %wavelets
+% 
+% %Gabor profiles defined as in Eq. 12 of the paper Zylberberg J, Murphy JT, DeWeese MR (2011). A sparse coding model with synaptically local plasticity and spiking neurons can account for the diverse shapes of V1 simple cell receptive fields. PLoS Computational Biology
+% %x and y correspond to pixel indices
+% %Cost function is defined as the squared difference between the gabor profile and the model data, ||G - RF||^2
+% %fminunc() is used to minimize this cost function and thereby obtain estimates of parameters
+% young = a30;
+% old = a80;
+% young_iw = reshape(young.cellGroup{2}.inputBlock(1).weight', patchDims(1), patchDims(2), []);
+% old_iw = reshape(old.cellGroup{2}.inputBlock(1).weight', patchDims(1), patchDims(2), []);
+% young_fits = ones(1, young.cg_V1e.numCells);
+% old_fits = ones(1, young.cg_V1e.numCells);
+% x = 1:patchDims(1);
+% y = 1:patchDims(2);
+% onevecx = ones(1, patchDims(1));
+% onevecy = ones(1, patchDims(2));
+% initvec = [1;0;0;pi;1;1;0.1;0];
+% gabor_thresh = 0.8; %threshold for cost function value below which fits are deemed good (i.e. receptive field is Gabor-like)
+% young_unfittable_indices = [];
+% old_unfittable_indices = [];
+% 
+% for i = 1:young.cg_V1e.numCells
+%     fprintf('Fitting cell %d out of %d\n', i, young.cg_V1e.numCells);
+%     RF = young_iw(:, :, i);
+%     L = @(z) (norm(z(1)*cos(2*pi*z(7)*((x-z(2))'*onevecx*cos(z(4))+onevecy'*(y-z(3))*sin(z(4)))+z(8)).*(exp(-((x-z(2))'*onevecx*cos(z(4))+onevecy'*(y-z(3))*sin(z(4))).^2/2/z(5)^2 - (-(x-z(2))'*onevecx*sin(z(4))+onevecy'*(y-z(3))*cos(z(4))).^2/2/z(6)^2))-RF)^2);
+%     options = optimoptions('fminunc', 'Display', 'off');
+%     try
+%         Gparams = fminunc(L, initvec, options);
+%         if Gparams(2) < patchDims(1) && Gparams(2) > 0 && Gparams(3) < patchDims(2) && Gparams(3) > 0
+%             fit_goodness = L(Gparams)/norm(RF)^2;
+%             if fit_goodness <= gabor_thresh
+%                 young_fits(i) = fit_goodness;
+%             end
+%         end
+%         RF = old_iw(:, :, i);
+%         L = @(z) (norm(z(1)*cos(2*pi*z(7)*((x-z(2))'*onevecx*cos(z(4))+onevecy'*(y-z(3))*sin(z(4)))+z(8)).*(exp(-((x-z(2))'*onevecx*cos(z(4))+onevecy'*(y-z(3))*sin(z(4))).^2/2/z(5)^2 - (-(x-z(2))'*onevecx*sin(z(4))+onevecy'*(y-z(3))*cos(z(4))).^2/2/z(6)^2))-RF)^2);
+%         try
+%             Gparams = fminunc(L, initvec, options);
+%             if Gparams(2) < patchDims(1) && Gparams(2) > 0 && Gparams(3) < patchDims(2) && Gparams(3) > 0
+%                 fit_goodness = L(Gparams)/norm(RF)^2;
+%                 if fit_goodness <= gabor_thresh
+%                     old_fits(i) = fit_goodness;
+%                 end
+%             end
+%         catch
+%             old_unfittable_indices = [old_unfittable_indices i];
+%         end
+%     catch
+%         young_unfittable_indices = [young_unfittable_indices i];
+%     end
+% end
+% 
+% unfittable_indices = union(young_unfittable_indices, old_unfittable_indices);
+% total_unfittable = numel(unfittable_indices);
+% total_fittable = young.cg_V1e.numCells-total_unfittable;
+% num_gabor_young = numel(find(young_fits ~= 1));
+% num_gabor_old = numel(find(old_fits ~= 1));
+% 
+% gaborfile = fopen(strcat(resultsdir, 'gabor_fit_results.txt'), 'wt');
+% line = sprintf('%.2f%% of neurons, in either youth or age, did not have Gabor fits and are excluded from the following statistics', total_unfittable/young.cg_V1e.numCells*100);
+% fprintf(gaborfile, '%s\n', line);
+% line = sprintf('%.2f%% of young neurons had good Gabor-like fits, while only %.2f%% of aged neurons did', num_gabor_young/total_fittable*100, num_gabor_old/total_fittable*100);
+% fprintf(gaborfile, '%s\n', line);
+% num_staying_gabor = 0; %neurons with receptive fields gabor-like in both youth and old age
+% num_becoming_gabor = 0; %neurons with receptive fields that are not gabor-like in youth but are in old age
+% for i = setdiff(1:young.cg_V1e.numCells, unfittable_indices)
+%     if young_fits(i) ~= 1
+%         if old_fits(i) ~= 1
+%             num_staying_gabor = num_staying_gabor + 1;
+%         end
+%     else
+%         if old_fits(i) ~= 1
+%             num_becoming_gabor = num_becoming_gabor + 1;
+%         end
+%     end
+% end
+% line = sprintf('%.2f%% of Gabor-like young neurons remained gabor-like in old age, while %.2f%% of neurons that were Gabor-like in youth were rejected as being Gabor-like in old age', num_staying_gabor/total_fittable*100, 100-num_staying_gabor/total_fittable*100);
+% fprintf(gaborfile, '%s\n', line);
+% line = sprintf('%.2f%% of neurons were not Gabor-like in youth but became Gabor-like in old age', num_becoming_gabor/total_fittable*100);
+% fprintf(gaborfile, '%s\n', line);
+% fclose(gaborfile);
+% type(strcat(resultsdir, 'gabor_fit_results.txt'))
 
-%Gabor profiles defined as in Eq. 12 of the paper Zylberberg J, Murphy JT, DeWeese MR (2011). A sparse coding model with synaptically local plasticity and spiking neurons can account for the diverse shapes of V1 simple cell receptive fields. PLoS Computational Biology
-%x and y correspond to pixel indices
-%Cost function is defined as the squared difference between the gabor profile and the model data, ||G - RF||^2
-%fminunc() is used to minimize this cost function and thereby obtain estimates of parameters
-young = a30;
-old = a80;
-young_iw = reshape(young.cellGroup{2}.inputBlock(1).weight', patchDims(1), patchDims(2), []);
-old_iw = reshape(old.cellGroup{2}.inputBlock(1).weight', patchDims(1), patchDims(2), []);
-young_fits = ones(1, young.cg_V1e.numCells);
-old_fits = ones(1, young.cg_V1e.numCells);
-x = 1:patchDims(1);
-y = 1:patchDims(2);
-onevecx = ones(1, patchDims(1));
-onevecy = ones(1, patchDims(2));
-initvec = [1;0;0;pi;1;1;0.1;0];
-gabor_thresh = 0.8; %threshold for cost function value below which fits are deemed good (i.e. receptive field is Gabor-like)
-young_unfittable_indices = [];
-old_unfittable_indices = [];
 
-for i = 1:young.cg_V1e.numCells
-    fprintf('Fitting cell %d out of %d\n', i, young.cg_V1e.numCells);
-    RF = young_iw(:, :, i);
-    L = @(z) (norm(z(1)*cos(2*pi*z(7)*((x-z(2))'*onevecx*cos(z(4))+onevecy'*(y-z(3))*sin(z(4)))+z(8)).*(exp(-((x-z(2))'*onevecx*cos(z(4))+onevecy'*(y-z(3))*sin(z(4))).^2/2/z(5)^2 - (-(x-z(2))'*onevecx*sin(z(4))+onevecy'*(y-z(3))*cos(z(4))).^2/2/z(6)^2))-RF)^2);
-    options = optimoptions('fminunc', 'Display', 'off');
-    try
-        Gparams = fminunc(L, initvec, options);
-        if Gparams(2) < patchDims(1) && Gparams(2) > 0 && Gparams(3) < patchDims(2) && Gparams(3) > 0
-            fit_goodness = L(Gparams)/norm(RF)^2;
-            if fit_goodness <= gabor_thresh
-                young_fits(i) = fit_goodness;
-            end
-        end
-        RF = old_iw(:, :, i);
-        L = @(z) (norm(z(1)*cos(2*pi*z(7)*((x-z(2))'*onevecx*cos(z(4))+onevecy'*(y-z(3))*sin(z(4)))+z(8)).*(exp(-((x-z(2))'*onevecx*cos(z(4))+onevecy'*(y-z(3))*sin(z(4))).^2/2/z(5)^2 - (-(x-z(2))'*onevecx*sin(z(4))+onevecy'*(y-z(3))*cos(z(4))).^2/2/z(6)^2))-RF)^2);
-        try
-            Gparams = fminunc(L, initvec, options);
-            if Gparams(2) < patchDims(1) && Gparams(2) > 0 && Gparams(3) < patchDims(2) && Gparams(3) > 0
-                fit_goodness = L(Gparams)/norm(RF)^2;
-                if fit_goodness <= gabor_thresh
-                    old_fits(i) = fit_goodness;
-                end
-            end
-        catch
-            old_unfittable_indices = [old_unfittable_indices i];
-        end
-    catch
-        young_unfittable_indices = [young_unfittable_indices i];
-    end
-end
+%Swapping parameters of young and old networks and testing orientation selectivity of
+%hybrids
 
-unfittable_indices = union(young_unfittable_indices, old_unfittable_indices);
-total_unfittable = numel(unfittable_indices);
-total_fittable = young.cg_V1e.numCells-total_unfittable;
-num_gabor_young = numel(find(young_fits ~= 1));
-num_gabor_old = numel(find(old_fits ~= 1));
+oyy = a30;
+oyy.cellGroup{2}.inputBlock(1).weight = a80.cellGroup{2}.inputBlock(1).weight;
+oyy.cellGroup{3}.inputBlock(1).weight = a80.cellGroup{3}.inputBlock(1).weight;
+oyy = testSelectivity(oyy, ginputDataMaster, numOrientations, numfpa);
+ 
+yoy = a30;
+yoy.cellGroup{2}.inputBlock(3).weight = a80.cellGroup{2}.inputBlock(3).weight;
+yoy.cellGroup{3}.inputBlock(2).weight = a80.cellGroup{3}.inputBlock(2).weight;
+yoy.cellGroup{3}.inputBlock(3).weight = a80.cellGroup{3}.inputBlock(3).weight;
+yoy = testSelectivity(yoy, ginputDataMaster, numOrientations, numfpa);
+ 
+yyo = a30;
+yyo.cellGroup{2}.spikeThresh = a80.cellGroup{2}.spikeThresh; 
+yyo.cellGroup{3}.spikeThresh = a80.cellGroup{3}.spikeThresh;
+yyo = testSelectivity(yyo, ginputDataMaster, numOrientations, numfpa);
+ 
+ooy = a80;
+ooy.cellGroup{2}.spikeThresh = a30.cellGroup{2}.spikeThresh; 
+ooy.cellGroup{3}.spikeThresh = a30.cellGroup{3}.spikeThresh;
+ooy = testSelectivity(ooy, ginputDataMaster, numOrientations, numfpa);
+ 
+oyo = a80;
+oyo.cellGroup{2}.inputBlock(3).weight = a30.cellGroup{2}.inputBlock(3).weight;
+oyo.cellGroup{3}.inputBlock(2).weight = a30.cellGroup{3}.inputBlock(2).weight;
+oyo.cellGroup{3}.inputBlock(3).weight = a30.cellGroup{3}.inputBlock(3).weight;
+oyo = testSelectivity(oyo, ginputDataMaster, numOrientations, numfpa);
+ 
+yoo = a80;
+yoo.cellGroup{2}.inputBlock(1).weight = a30.cellGroup{2}.inputBlock(1).weight;
+yoo.cellGroup{3}.inputBlock(1).weight = a30.cellGroup{3}.inputBlock(1).weight;
+yoo = testSelectivity(yoo, ginputDataMaster, numOrientations, numfpa);
 
-gaborfile = fopen(strcat(resultsdir, 'gabor_fit_results.txt'), 'wt');
-line = sprintf('%.2f%% of neurons, in either youth or age, did not have Gabor fits and are excluded from the following statistics', total_unfittable/young.cg_V1e.numCells*100);
-fprintf(gaborfile, '%s\n', line);
-line = sprintf('%.2f%% of young neurons had good Gabor-like fits, while only %.2f%% of aged neurons did', num_gabor_young/total_fittable*100, num_gabor_old/total_fittable*100);
-fprintf(gaborfile, '%s\n', line);
-num_staying_gabor = 0; %neurons with receptive fields gabor-like in both youth and old age
-num_becoming_gabor = 0; %neurons with receptive fields that are not gabor-like in youth but are in old age
-for i = setdiff(1:young.cg_V1e.numCells, unfittable_indices)
-    if young_fits(i) ~= 1
-        if old_fits(i) ~= 1
-            num_staying_gabor = num_staying_gabor + 1;
-        end
-    else
-        if old_fits(i) ~= 1
-            num_becoming_gabor = num_becoming_gabor + 1;
-        end
-    end
-end
-line = sprintf('%.2f%% of Gabor-like young neurons remained gabor-like in old age, while %.2f%% of neurons that were Gabor-like in youth were rejected as being Gabor-like in old age', num_staying_gabor/total_fittable*100, 100-num_staying_gabor/total_fittable*100);
-fprintf(gaborfile, '%s\n', line);
-line = sprintf('%.2f%% of neurons were not Gabor-like in youth but became Gabor-like in old age', num_becoming_gabor/total_fittable*100);
-fprintf(gaborfile, '%s\n', line);
-fclose(gaborfile);
-type(strcat(resultsdir, 'gabor_fit_results.txt'))
+xlabels = ['YYY'
+'OYY'
+'YOY'
+'YYO'
+'OOY'
+'OYO'
+'YOO'
+'OOO'];
 
-%Dependence between receptive field similarity and strength of mutual
-%inhibition of pairs of excitatory neurons
-model = a30;
-ee = model.cellGroup{2}.inputBlock(3).weight*model.cellGroup{3}.inputBlock(2).weight;
-overlap = zeros(model.cg_V1e.numCells*(model.cg_V1e.numCells-1)/2,2);
-inhibition = zeros(model.cg_V1e.numCells*(model.cg_V1e.numCells-1)/2,2);
-c=0;
-for i = 1:model.cg_V1e.numCells
-    for j = (i+1):model.cg_V1e.numCells
-        c=c+1;
-        similarity = dot(model.cellGroup{2}.inputBlock(1).weight(i, :), model.cellGroup{2}.inputBlock(1).weight(j, :))/(norm(model.cellGroup{2}.inputBlock(1).weight(i, :))*norm(model.cellGroup{2}.inputBlock(1).weight(j, :)));
-        overlap(c, 1) = similarity;
-        overlap(c, 2) = similarity;
-        inhibition(c, 1) = ee(i, j);
-        inhibition(c, 2) = ee(j, i);
-    end
-end
+C = [mean(a30.selectivity.exc)
+mean(oyy.selectivity.exc)
+mean(yoy.selectivity.exc)
+mean(yyo.selectivity.exc)
+mean(ooy.selectivity.exc)
+mean(oyo.selectivity.exc)
+mean(yoo.selectivity.exc)
+mean(a80.selectivity.exc)];
 
-figure;
-scatter(inhibition(:), overlap(:)) 
-hold on; plot(0:40,0*(0:40),'k--','linewidth',5)
-xlabel('$|W_{EI} W_{IE}|$','Interpreter','latex','fontsize',20)
-ylabel('RF overlap','Interpreter','latex','fontsize',20)
-set(gca,'fontsize',20)
-% saveas(gcf, strcat(resultsdir, 'rf_similarity_vs_inhibition.fig'))
-% export_fig(strcat(resultsdir, 'rf_similarity_vs_inhibition.pdf'), '-painters', '-transparent')
+figure; 
+axb = axes;
+bp = bar(axb,C,0.5,'FaceColor','flat','LineWidth',5);
+ylabel('Mean selectivity','Interpreter','latex','FontSize',20)
+ylim([0 1]);
+axb.XTickLabel= xlabels;
+xtickangle(30);
+text(4,0.9,'$Q W \theta =(Y/O,Y/O,Y/O)$','Interpreter','latex','FontSize',20);
+axb.FontSize = 20;
+set(axb.Legend,'Interpreter','latex','FontSize',20);
+bp(1).CData = [1 1 1];
+saveas(gcf, strcat(resultsdir, 'young_old_param_swap.fig'))
+export_fig(strcat(resultsdir, 'young_old_param_swap.pdf'), '-painters', '-transparent')
+
+
+% %Dependence between receptive field similarity and strength of mutual
+% %inhibition of pairs of excitatory neurons
+% model = a30;
+% ee = model.cellGroup{2}.inputBlock(3).weight*model.cellGroup{3}.inputBlock(2).weight;
+% overlap = zeros(model.cg_V1e.numCells*(model.cg_V1e.numCells-1)/2,2);
+% inhibition = zeros(model.cg_V1e.numCells*(model.cg_V1e.numCells-1)/2,2);
+% c=0;
+% for i = 1:model.cg_V1e.numCells
+%     for j = (i+1):model.cg_V1e.numCells
+%         c=c+1;
+%         similarity = dot(model.cellGroup{2}.inputBlock(1).weight(i, :), model.cellGroup{2}.inputBlock(1).weight(j, :))/(norm(model.cellGroup{2}.inputBlock(1).weight(i, :))*norm(model.cellGroup{2}.inputBlock(1).weight(j, :)));
+%         overlap(c, 1) = similarity;
+%         overlap(c, 2) = similarity;
+%         inhibition(c, 1) = ee(i, j);
+%         inhibition(c, 2) = ee(j, i);
+%     end
+% end
+% 
+% figure;
+% scatter(inhibition(:), overlap(:)) 
+% hold on; plot(0:40,0*(0:40),'k--','linewidth',5)
+% xlabel('$|W_{EI} W_{IE}|$','Interpreter','latex','fontsize',20)
+% ylabel('RF overlap','Interpreter','latex','fontsize',20)
+% set(gca,'fontsize',20)
+% % saveas(gcf, strcat(resultsdir, 'rf_similarity_vs_inhibition.fig'))
+% % export_fig(strcat(resultsdir, 'rf_similarity_vs_inhibition.pdf'), '-painters', '-transparent')
 end
 
 
